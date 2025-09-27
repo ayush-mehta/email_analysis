@@ -35,3 +35,5 @@ functions:
       - schedule:
           rate: cron(30 13 * * ? *)  # Run daily at 7:00 PM IST (1:30 PM UTC)
           enabled: true
+          input:
+            email_ids: ["ayushmehta2001108@gmail.com"]
