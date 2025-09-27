@@ -1,0 +1,37 @@
+service: summarise-emails
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  stage: prod
+  region: 'ap-south-1'
+  timeout: 300
+  memorySize: 256
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: "*"
+
+package:
+  patterns:
+    - '!**'
+    - 'daily_summary.py'
+    - 'utils/**'
+    - 'requirements.txt'
+    - '.python-version'
+
+functions:
+  dailySummary:
+    handler: daily_summary.main
+    description: Daily email summary cron job
+    events:
+      - schedule:
+          rate: cron(30 13 * * ? *)  # Run daily at 7:00 PM IST (1:30 PM UTC)
+          enabled: true
